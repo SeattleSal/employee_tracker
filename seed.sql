@@ -1,27 +1,28 @@
-DROP DATABASE IF EXISTS employeesDB;
-CREATE database employeesDB;
-
 USE employeesDB;
 
-CREATE TABLE employee (
-    id int,
-    first_name VARCHAR(30),
-    last_name VARCHAR(30),
-    role_id INT,
-    manager_id INT,
-    PRIMARY KEY (id)
-);
+insert into department (name)
+values ('Sales'),
+('Engineering'),
+('Finance'),
+('Legal');
 
-CREATE TABLE role (
-    id int,
-    title VARCHAR(30),
-    salary DECIMAL,
-    department_id INT,
-    Primary key (id) 
-);
+insert into role (title, salary, department_id)
+values('Sales Lead', 100000, 1),
+('Salesperson', 800000,1),
+('Lead Engineer', 150000, 2),
+('Software Engineer', 120000, 2),
+('Account Manager', 160000, 3),
+('Accountant', 125000, 3),
+('Legal Team Lead', 250000, 4),
+('Lawyer', 190000, 4);
 
-create table department (
-    id INT,
-    name VARCHAR(30),
-    primary key (id)
-);
+insert into employee (first_name, last_name, role_id, manager_id)
+values
+('John', 'Doe', 1, null),
+('Mike', 'Chen', 2, 1),
+('Ashley', 'Rodriguez', 3, NULL),
+('Kevin', 'Tupik', 4, 3),
+('Kumal', 'Singh', 5, null),
+('Malia', 'Brown', 6, 5),
+('Sarah', 'Lourd', 7, null),
+('Tom', 'Allen', 8, 7);

@@ -15,6 +15,7 @@ Note Taker is an application that can be used to write, save and delete notes. T
 * [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
 * [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
 * [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
+* [ASCII Art Logo](https://www.npmjs.com/package/asciiart-logo)
 
 There is a `package.json` included, the following commands should be run to install dependencies:
 
