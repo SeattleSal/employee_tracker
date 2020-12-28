@@ -5,6 +5,8 @@ const logo = require("asciiart-logo");
 // require db folder which includes index.js
 const db = require("./db");
 const connection = require("./db/connection");
+const { createPromptModule } = require("inquirer");
+const { insertRole } = require("./db");
 // require("console.table");
 
 init();
@@ -39,6 +41,18 @@ async function loadMainPrompts() {
                     value: "VIEW_EMPLOYEES"
                 },
                 {
+                    name: "Create department",
+                    value: "CREATE_DEPARTMENT"
+                },
+                {
+                    name: "Create role",
+                    value: "CREATE_ROLE"
+                },                
+                {
+                    name: "Create employee",
+                    value: "CREATE_EMPLOYEE"
+                },
+                {
                     name: "Exit",
                     value: "EXIT"
                 }                
@@ -67,10 +81,21 @@ async function loadMainPrompts() {
             case "VIEW_EMPLOYEES":
                 viewEmployees();
                 break;
+
+            case "CREATE_DEPARTMENT":
+                createDepartment();
+                break;
             
+            case "CREATE_ROLE":
+                createRole();
+                break;
+
+            case "CREATE_EMPLOYEE":
+                createEmployee();
+                break;
+
             default:
                 connection.end();
-                // console.log("Exit")
         }
     });
 }
@@ -100,4 +125,55 @@ function viewEmployees() {
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
+}
+
+function createDepartment() {
+    console.log("create department!");
+    loadMainPrompts();
+}
+
+function createRole() {
+    // console.log("create role");
+    // read departments to display as list
+    db.getDepartments()
+    .then(( departments ) => {
+        const departmentList = departments.map( (department) => ({
+            value: department.id,
+            name: department.name})
+        );
+
+        inquirer.prompt([
+            {
+                name: "departmentID",
+                message: "What department is this role for?",
+                type: "list",
+                choices: departmentList
+            },
+            {
+                name: "title",
+                message: "What is the title of this role?",
+                type: "input"
+            },
+            {
+                name: "salary",
+                message: "What is the salary for this role?",
+                type: "input"
+            }
+        ]).then( newRoleInfo => {
+            // console.log(res);
+            db.insertRole(newRoleInfo)
+            .then((results) => {
+                console.log("New role added");
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from insertRole() call
+        })
+
+    })
+    .catch((err) => { throw(err);}); // catch error from getDepartments() call
+}
+
+function createEmployee() {
+    console.log("Create employee!");
+    loadMainPrompts();
 }
