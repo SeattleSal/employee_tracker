@@ -1,6 +1,7 @@
 // interactions with database
 const connection = require("./connection");
 
+// object methods
 module.exports = {
     getDepartments() {
         // return results of getting all deparmtnets
@@ -9,7 +10,6 @@ module.exports = {
     },
     getRoles() {
         return connection.query("SELECT * FROM role")
-
     },
     getEmployees() {
         return connection.query("SELECT * FROM employee")

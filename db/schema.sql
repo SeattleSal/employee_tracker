@@ -3,7 +3,7 @@ CREATE database employeesDB;
 
 USE employeesDB;
 
-create table department (
+CREATE TABLE department (
     id INT unsigned AUTO_INCREMENT primary key,
     name VARCHAR(30) UNIQUE NOT NULL 
 );

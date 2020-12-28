@@ -1,7 +1,6 @@
-// connection.js - handles all connection
-
-const util = require("util");
+// connection.js - handles all connection functionality
 const mysql = require("mysql");
+const util = require("util"); // used to promisify function
 
 const connection = mysql.createConnection({
     host: "localhost",
@@ -18,11 +17,5 @@ connection.connect((err) => {
 
 // uses promises instead of callbacks
 connection.query = util.promisify(connection.query);
-// connection.query("")
-// .then((res) => {
-// })
-// .catch((err) => {
-//
-// });
 
 module.exports = connection;
