@@ -1,10 +1,10 @@
 // Employee Tracker App
-
+// requirements
 const inquirer = require("inquirer");
+const logo = require("asciiart-logo");
 // require db folder which includes index.js
 const db = require("./db");
-const logo = require("asciiart-logo");
-const { getDepartments } = require("./db");
+const connection = require("./db/connection");
 // require("console.table");
 
 init();
@@ -27,19 +27,22 @@ async function loadMainPrompts() {
             message: "What would you like to do?",
             choices: [
                 {
-                    name: "View all employees",
-                    value: "VIEW_EMPLOYEES"
+                    name: "View all departments",
+                    value: "VIEW_DEPARTMENTS"
                 },
                 {
                     name: "View all roles",
                     value: "VIEW_ROLES"
                 },
                 {
-                    name: "View all departments",
-                    value: "VIEW_DEPARTMENTS"
-                }
-                // ,
-                // {
+                    name: "View all employees",
+                    value: "VIEW_EMPLOYEES"
+                },
+                {
+                    name: "Exit",
+                    value: "EXIT"
+                }                
+                // ,{
                 //     name: "View all Employees by department",
                 //     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
                 // },
@@ -47,50 +50,54 @@ async function loadMainPrompts() {
                 //     name: "View all employees by manager",
                 //     value: "VIEW_EMPLOYEES_BY_MANAGER"
                 // },
-                // {
-                //     name: "Exit",
-                //     value: "EXIT"
-                // }
+
             ]
         }
     ])
     .then(function(answer) {
         switch(answer.choice) {
-            case "VIEW_EMPLOYEES":
-                db.getEmployees()
-                .then((res) => { 
-                    console.log(res);
-                    loadMainPrompts();
-                })
-                .catch((err) => { throw(err); });
-                break;
-            
-            case "VIEW_ROLES":
-                db.getRoles()
-                .then((res) => { 
-                    console.log(res);
-                    loadMainPrompts();
-                })
-                .catch((err) => { throw(err); });
-                break;
-                
             case "VIEW_DEPARTMENTS":
-                db.getDepartments()
-                .then((res) => { 
-                    console.log(res);
-                    loadMainPrompts();
-                })
-                .catch((err) => { throw(err); });
+                viewDepartments()
                 break;
 
-            case "EXIT":
-                console.log("Exit")
+            case "VIEW_ROLES":
+                viewRoles();
                 break;
+                
+            case "VIEW_EMPLOYEES":
+                viewEmployees();
+                break;
+            
+            default:
+                connection.end();
+                // console.log("Exit")
         }
     });
 }
 
+function viewDepartments() {
+    db.getDepartments()
+    .then((res) => { 
+        console.table(res);
+        loadMainPrompts();
+    })
+    .catch((err) => { throw(err); });
+}
 
-// db.getDepartments().then((results) =>
-// console.log(results);
-// )
+function viewRoles() {
+    db.getRoles()
+    .then((res) => { 
+        console.table(res);
+        loadMainPrompts();
+    })
+    .catch((err) => { throw(err); });
+}
+
+function viewEmployees() {
+    db.getEmployees()
+    .then((res) => { 
+        console.table(res);
+        loadMainPrompts();
+    })
+    .catch((err) => { throw(err); });
+}
