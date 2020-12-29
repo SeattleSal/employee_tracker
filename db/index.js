@@ -28,6 +28,15 @@ module.exports = {
             title: roleData.title,
             salary: roleData.salary
         });
+    },
+    insertEmployee(empData){
+        return connection.query("INSERT INTO employee SET ?",
+        {
+            first_name: empData.fName,
+            last_name: empData.lName,
+            role_id: empData.roleID,
+            manager_id: empData.managerID
+        });
     }
 }
 

@@ -5,8 +5,8 @@ const logo = require("asciiart-logo");
 // require db folder which includes index.js
 const db = require("./db");
 const connection = require("./db/connection");
-const { createPromptModule } = require("inquirer");
-const { insertRole } = require("./db");
+// const { createPromptModule } = require("inquirer");
+// const { insertRole } = require("./db");
 // require("console.table");
 
 init();
@@ -188,8 +188,62 @@ function createRole() {
 }
 
 function createEmployee() {
-    console.log("Create employee!");
-    // get roles
-    // get existing employees
-    loadMainPrompts();
+    // get roles to choose from
+    // get existing employees to choose manager or none
+    db.getRoles()
+    .then(( roles ) => {
+        const roleList = roles.map( (role) => ({
+            value: role.id,
+            name: role.title})
+        );
+
+        // put get employees here to put in list for manager display?
+        db.getEmployees()
+        .then(( employees ) => {
+            const employeeList = employees.map((emp) => ({
+                value: emp.id,
+                name: `${emp.first_name} ${emp.last_name}`
+            }));
+            employeeList.push({
+                value: null,
+                name: "No Manager"
+            })
+            console.log(employeeList);
+
+            inquirer.prompt([
+                {
+                    message: "What role is this employee for?",
+                    name: "roleID",
+                    type: "list",
+                    choices: roleList
+                },
+                {
+                    message: "What is the first name of the employee?",
+                    name: "fName",
+                    type: "input"
+                },
+                {
+                    message: "What is the last name of the employee?",
+                    name: "lName",
+                    type: "input"
+                },
+                {
+                    message: "Which employee is the manager for this employee?",
+                    name: "managerID",
+                    type: "list",
+                    choices: employeeList
+                }
+            ]).then( newEmployeeInfo => {
+                // console.log(res);
+                db.insertEmployee(newEmployeeInfo)
+                .then((results) => {
+                    console.log("New Employee added");
+                    loadMainPrompts();
+                })
+                .catch((err) => { throw (err); }); // catch error from insertEmployee() call
+            })
+        })
+        .catch((err) => { throw(err);}); // catch error from getEmployees() call
+    })
+    .catch((err) => { throw(err);}); // catch error from getDepartments() call
 }
