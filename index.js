@@ -13,7 +13,20 @@ init();
 
 // display intro logo
 function init() {
-    console.log("Let's go!");
+    // console.log("Let's go!");
+    console.log(
+        logo({
+            name: 'Employee Manager',
+            font: 'Big',
+            lineChars: 10,
+            padding: 2,
+            margin: 3,
+            borderColor: 'grey',
+            logoColor: 'bold-green',
+            textColor: 'green',
+        })
+        .render()
+    );
     //const logoText = logo({name: "Employee Manager"}).render();
     // console.log(logoText);
     loadMainPrompts();

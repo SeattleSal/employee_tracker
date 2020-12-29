@@ -1,18 +1,17 @@
 // interactions with database
 const connection = require("./connection");
 
-// object methods
+// object methods return a promise
 module.exports = {
+    // get functions
     getDepartments() {
-        // return results of getting all deparmtnets
-        // return a promise
         return connection.query("SELECT * FROM department")
     },
     getRoles() {
         return connection.query("SELECT * FROM role")
     },
     getEmployees() {
-        // return connection.query("SELECT * FROM employee")
+        // get role and department info from role and department tables
         return connection.query(`SELECT emp.id, emp.first_name, emp.last_name, role.title, dept.name AS 'department', role.salary, CONCAT ( emp2.first_name, " ", emp2.last_name ) AS 'manager name'
             FROM employee as emp
             LEFT JOIN role
@@ -22,6 +21,7 @@ module.exports = {
             LEFT JOIN employee as emp2
                 ON emp.manager_id = emp2.id`)
     },
+    // insert functions
     insertDepartment(deptData){
         return connection.query("INSERT INTO department SET ?",
         {
@@ -29,7 +29,6 @@ module.exports = {
         });
     },
     insertRole(roleData) {
-        // grab data into placeholders
         return connection.query("INSERT INTO role SET ?",
         {
             department_id: roleData.departmentID,
