@@ -33,8 +33,8 @@ function init() {
     loadMainPrompts();
 };
 
-async function loadMainPrompts() {
-    await inquirer.prompt([
+ function loadMainPrompts() {
+     inquirer.prompt([
 // async function loadMainPrompts() {
     // const { choice } = await prompt([
         {
@@ -69,6 +69,14 @@ async function loadMainPrompts() {
                 {
                     name: "Update employee",
                     value: "UPDATE_EMPLOYEE"
+                },
+                {
+                    name: "Delete department",
+                    value: "DELETE_DEPARTMENT"
+                },
+                {
+                    name: "View budget of department",
+                    value: "DEPARTMENT_BUDGET"
                 },
                 {
                     name: "Exit",
@@ -114,6 +122,14 @@ async function loadMainPrompts() {
 
             case "UPDATE_EMPLOYEE":
                 updateEmployee();
+                break;
+            
+            case "DELETE_DEPARTMENT":
+                deleteDepartment();
+                break;
+            
+            case "DEPARTMENT_BUDGET":
+                viewBudget();
                 break;
 
             default:
@@ -272,7 +288,7 @@ function createEmployee() {
         })
         .catch((err) => { throw(err);}); // catch error from getEmployees() call
     })
-    .catch((err) => { throw(err);}); // catch error from getDepartments() call
+    .catch((err) => { throw(err);}); // catch error from getRoles() call
 }
 
 function updateEmployee() {
@@ -318,4 +334,78 @@ function updateEmployee() {
     })
     .catch((err) => { throw(err);}); // catch error from getEmployees() call
 
+}
+
+function deleteDepartment(){
+    db.getDepartments()
+    .then(( departments ) => {
+        const departmentList = departments.map( (department) => ({
+            value: department.id,
+            name: department.name})
+        );
+
+        inquirer.prompt([
+            {
+                name: "departmentID",
+                message: "What department do you want to delete?",
+                type: "list",
+                choices: departmentList
+            }
+        ]).then( departmentID => {
+            // console.log(res);
+            // db.insertRole(newRoleInfo)
+            db.deleteDepartment(departmentID)
+            .then((results) => {
+                console.log("Department deleted");
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from insertRole() call
+        })
+
+    })
+    .catch((err) => { throw(err);}); // catch error from getDepartments() call 
+}
+
+// delete department
+// expect that roles and employees associated with that department will delete
+
+// delete role
+// expect the employees will get deleted
+
+// delete employee
+// if they are manager, reports should be set as null 
+
+//   * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
+// show the user a list of departments so they can choose one
+// select 
+
+function viewBudget() {
+    db.getDepartments()
+    .then(( departments ) => {
+        const departmentList = departments.map( (department) => ({
+            value: department.id,
+            name: department.name})
+        );
+
+        inquirer.prompt([
+            {
+                name: "departmentID",
+                message: "What department do you want to see the budget for?",
+                type: "list",
+                choices: departmentList
+            }
+        ]).then( departmentInfo => {
+            // console.log(res);
+            // db.insertRole(newRoleInfo)
+            db.getDepartmentBudget(departmentInfo)
+            .then((results) => {
+                let budgetTable = cTable.getTable(results);
+                console.log(budgetTable);
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from insertRole() call
+        })
+
+    })
+    .catch((err) => { throw(err);}); // catch error from getDepartments() call
 }
