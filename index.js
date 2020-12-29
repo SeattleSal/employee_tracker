@@ -13,22 +13,23 @@ init();
 
 // display intro logo
 function init() {
-    // console.log("Let's go!");
     console.log(
         logo({
             name: 'Employee Manager',
             font: 'Big',
-            lineChars: 10,
+            lineChars: 15,
             padding: 2,
             margin: 3,
             borderColor: 'grey',
             logoColor: 'bold-green',
             textColor: 'green',
         })
+        .emptyLine()
+        .right('version 1.0')
+        .emptyLine()
+        .center("Create and track departments, roles and employees.")
         .render()
     );
-    //const logoText = logo({name: "Employee Manager"}).render();
-    // console.log(logoText);
     loadMainPrompts();
 };
 
@@ -64,6 +65,10 @@ async function loadMainPrompts() {
                 {
                     name: "Create employee",
                     value: "CREATE_EMPLOYEE"
+                },
+                {
+                    name: "Update employee",
+                    value: "UPDATE_EMPLOYEE"
                 },
                 {
                     name: "Exit",
@@ -105,6 +110,10 @@ async function loadMainPrompts() {
 
             case "CREATE_EMPLOYEE":
                 createEmployee();
+                break;
+
+            case "UPDATE_EMPLOYEE":
+                updateEmployee();
                 break;
 
             default:
@@ -264,4 +273,49 @@ function createEmployee() {
         .catch((err) => { throw(err);}); // catch error from getEmployees() call
     })
     .catch((err) => { throw(err);}); // catch error from getDepartments() call
+}
+
+function updateEmployee() {
+    db.getEmployees()
+    .then(( employees ) => {
+        const employeeList = employees.map((emp) => ({
+            value: emp.id,
+            name: `${emp.first_name} ${emp.last_name}`
+        }));
+
+        // put get employees here to put in list for manager display?
+        db.getRoles()
+        .then(( roles ) => {
+            const roleList = roles.map( (role) => ({
+                value: role.id,
+                name: role.title})
+            );
+
+            inquirer.prompt([
+                {
+                    message: "What employee role do you want to change?",
+                    name: "employeeID",
+                    type: "list",
+                    choices: employeeList
+                },
+                {
+                    message: "What is the employee's new role?",
+                    name: "roleID",
+                    type: "list",
+                    choices: roleList
+                }
+            ]).then( newRoleInfo => {
+                console.log(newRoleInfo);
+                db.updateEmployee (newRoleInfo)
+                .then((results) => {
+                    console.log("Employee role updated");
+                    loadMainPrompts();
+                })
+                .catch((err) => { throw (err); }); // catch error from insertEmployee() call
+            })
+        })
+        .catch((err) => { throw(err);}); // catch error from getRoles() call
+    })
+    .catch((err) => { throw(err);}); // catch error from getEmployees() call
+
 }

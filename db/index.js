@@ -44,6 +44,17 @@ module.exports = {
             role_id: empData.roleID,
             manager_id: empData.managerID
         });
+    },
+    updateEmployee(empData){
+        return connection.query("UPDATE employee SET ? WHERE ?",
+        [
+            { // this is getting an error
+                role_id: empData.roleID
+            },
+            {
+                id: empData.employeeID
+            }
+        ]);
     }
 }
 
