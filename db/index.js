@@ -14,6 +14,12 @@ module.exports = {
     getEmployees() {
         return connection.query("SELECT * FROM employee")
     },
+    insertDepartment(deptData){
+        return connection.query("INSERT INTO department SET ?",
+        {
+            name: deptData.name
+        });
+    },
     insertRole(roleData) {
         // grab data into placeholders
         return connection.query("INSERT INTO role SET ?",
@@ -22,10 +28,6 @@ module.exports = {
             title: roleData.title,
             salary: roleData.salary
         });
-        // function(err, res) {
-        //     if (err) throw err;
-        //     console.log("Role added: " + res.affectedRows);
-        // });
     }
 }
 

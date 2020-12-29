@@ -128,8 +128,22 @@ function viewEmployees() {
 }
 
 function createDepartment() {
-    console.log("create department!");
-    loadMainPrompts();
+    // console.log("create department!");
+    inquirer.prompt([
+        {
+            name: "name",
+            message: "What name is the new department?",
+            type: "input"
+        }
+    ]).then( newDepartmentInfo => {
+        // console.log(res);
+        db.insertDepartment(newDepartmentInfo)
+        .then((results) => {
+            console.log("New department added");
+            loadMainPrompts();
+        })
+        .catch((err) => { throw (err); }); // catch error from insertDepartment() call
+    })
 }
 
 function createRole() {
@@ -175,5 +189,7 @@ function createRole() {
 
 function createEmployee() {
     console.log("Create employee!");
+    // get roles
+    // get existing employees
     loadMainPrompts();
 }
