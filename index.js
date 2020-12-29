@@ -2,12 +2,12 @@
 // requirements
 const inquirer = require("inquirer");
 const logo = require("asciiart-logo");
+const cTable = require('console.table');
 // require db folder which includes index.js
 const db = require("./db");
 const connection = require("./db/connection");
 // const { createPromptModule } = require("inquirer");
 // const { insertRole } = require("./db");
-// require("console.table");
 
 init();
 
@@ -103,7 +103,8 @@ async function loadMainPrompts() {
 function viewDepartments() {
     db.getDepartments()
     .then((res) => { 
-        console.table(res);
+        let deptTable = cTable.getTable(res);
+        console.log(deptTable);
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
@@ -112,7 +113,9 @@ function viewDepartments() {
 function viewRoles() {
     db.getRoles()
     .then((res) => { 
-        console.table(res);
+        let roleTable = cTable.getTable(res);
+        console.log(roleTable);
+        // console.table(res);
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
@@ -121,7 +124,9 @@ function viewRoles() {
 function viewEmployees() {
     db.getEmployees()
     .then((res) => { 
-        console.table(res);
+        let empTable = cTable.getTable(res);
+        console.log(empTable);
+        // console.table(res);
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
