@@ -35,8 +35,6 @@ function init() {
 
  function loadMainPrompts() {
      inquirer.prompt([
-// async function loadMainPrompts() {
-    // const { choice } = await prompt([
         {
             type: "list",
             name: "choice",
@@ -55,20 +53,24 @@ function init() {
                     value: "VIEW_EMPLOYEES"
                 },
                 {
-                    name: "Create department",
+                    name: "Add department",
                     value: "CREATE_DEPARTMENT"
                 },
                 {
-                    name: "Create role",
+                    name: "Add role",
                     value: "CREATE_ROLE"
                 },                
                 {
-                    name: "Create employee",
+                    name: "Add employee",
                     value: "CREATE_EMPLOYEE"
                 },
                 {
-                    name: "Update employee",
+                    name: "Update employee role",
                     value: "UPDATE_EMPLOYEE"
+                },
+                {
+                    name: "Update employee manager",
+                    value: "UPDATE_EMP_MANAGER"
                 },
                 {
                     name: "Delete department",
@@ -81,7 +83,10 @@ function init() {
                 {
                     name: "Exit",
                     value: "EXIT"
-                }                
+                }    
+                // TO DO : update employee manager
+                // TO DO: view employee by manager
+                // TO DO : delete roles and delete employees            
                 // ,{
                 //     name: "View all Employees by department",
                 //     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
@@ -121,7 +126,11 @@ function init() {
                 break;
 
             case "UPDATE_EMPLOYEE":
-                updateEmployee();
+                updateEmployeeRole();
+                break;
+            
+            case "UPDATE_EMP_MANAGER":
+                updateEmployeeManager();
                 break;
             
             case "DELETE_DEPARTMENT":
@@ -217,7 +226,6 @@ function createRole() {
                 type: "input"
             }
         ]).then( newRoleInfo => {
-            // console.log(res);
             db.insertRole(newRoleInfo)
             .then((results) => {
                 console.log("New role added");
@@ -291,7 +299,7 @@ function createEmployee() {
     .catch((err) => { throw(err);}); // catch error from getRoles() call
 }
 
-function updateEmployee() {
+function updateEmployeeRole() {
     db.getEmployees()
     .then(( employees ) => {
         const employeeList = employees.map((emp) => ({
@@ -322,7 +330,7 @@ function updateEmployee() {
                 }
             ]).then( newRoleInfo => {
                 console.log(newRoleInfo);
-                db.updateEmployee (newRoleInfo)
+                db.updateEmployeeRole (newRoleInfo)
                 .then((results) => {
                     console.log("Employee role updated");
                     loadMainPrompts();
@@ -333,7 +341,43 @@ function updateEmployee() {
         .catch((err) => { throw(err);}); // catch error from getRoles() call
     })
     .catch((err) => { throw(err);}); // catch error from getEmployees() call
+}
 
+function updateEmployeeManager() {
+    db.getEmployees()
+    .then(( employees ) => {
+        const employeeList = employees.map((emp) => ({
+            value: emp.id,
+            name: `${emp.first_name} ${emp.last_name}`
+        }));
+
+        // create manager list with all but current employee?
+        inquirer.prompt([
+            {
+                message: "What employee do you want to change the manager?",
+                name: "employeeID",
+                type: "list",
+                choices: employeeList
+            },
+            {
+                message: "What is the new manager for this employee?",
+                name: "managerID",
+                type: "list",
+                choices: employeeList,
+                // filter: function 
+                // employeeList.filter(emp => emp.id != employeeID)
+            }
+        ]).then( newManagerInfo => {
+            // console.log(newRoleInfo);
+            db.updateEmployeeManager(newManagerInfo)
+            .then((results) => {
+                console.log("Employee manager updated");
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from insertEmployee() call
+        })
+    })
+    .catch((err) => { throw(err);}); // catch error from getEmployees() call
 }
 
 function deleteDepartment(){
