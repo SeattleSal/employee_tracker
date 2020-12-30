@@ -12,7 +12,7 @@ module.exports = {
     },
     getEmployees() {
         // get role and department info from role and department tables
-        return connection.query(`SELECT emp.id, emp.first_name, emp.last_name, role.title, dept.name AS 'department', role.salary, CONCAT ( emp2.first_name, " ", emp2.last_name ) AS 'manager name'
+        return connection.query(`SELECT emp.id, emp.first_name, emp.last_name, role.title, dept.name AS 'department', role.salary, CONCAT ( emp2.first_name, " ", emp2.last_name ) AS 'manager'
             FROM employee as emp
             LEFT JOIN role
                 ON emp.role_id = role.id
@@ -74,7 +74,12 @@ module.exports = {
             id: depInfo.departmentID
         });
     },
-    getDepartmentBudget(departmentInfo){
+    deleteRole(roleInfo){
+        return connection.query("DELETE FROM role WHERE ?",
+        {
+            id: roleInfo.roleID
+        });
+    },    getDepartmentBudget(departmentInfo){
         return connection.query(`SELECT department.id, department.name, SUM(role.salary) AS 'budget' 
                                 FROM employee 
                                 LEFT JOIN role

@@ -77,6 +77,10 @@ function init() {
                     value: "DELETE_DEPARTMENT"
                 },
                 {
+                    name: "Delete role",
+                    value: "DELETE_ROLE"
+                },
+                {
                     name: "View budget of department",
                     value: "DEPARTMENT_BUDGET"
                 },
@@ -84,13 +88,8 @@ function init() {
                     name: "Exit",
                     value: "EXIT"
                 }    
-                // TO DO : update employee manager
                 // TO DO: view employee by manager
                 // TO DO : delete roles and delete employees            
-                // ,{
-                //     name: "View all Employees by department",
-                //     value: "VIEW_EMPLOYEES_BY_DEPARTMENT"
-                // },
                 // {
                 //     name: "View all employees by manager",
                 //     value: "VIEW_EMPLOYEES_BY_MANAGER"
@@ -135,6 +134,10 @@ function init() {
             
             case "DELETE_DEPARTMENT":
                 deleteDepartment();
+                break;
+            
+            case "DELETE_ROLE":
+                deleteRole();
                 break;
             
             case "DEPARTMENT_BUDGET":
@@ -255,19 +258,12 @@ function createEmployee() {
                 value: emp.id,
                 name: `${emp.first_name} ${emp.last_name}`
             }));
-            employeeList.push({
+            employeeList.unshift({
                 value: null,
                 name: "No Manager"
             })
-            console.log(employeeList);
 
             inquirer.prompt([
-                {
-                    message: "What role is this employee for?",
-                    name: "roleID",
-                    type: "list",
-                    choices: roleList
-                },
                 {
                     message: "What is the first name of the employee?",
                     name: "fName",
@@ -277,6 +273,12 @@ function createEmployee() {
                     message: "What is the last name of the employee?",
                     name: "lName",
                     type: "input"
+                },
+                {
+                    message: "What role is this employee for?",
+                    name: "roleID",
+                    type: "list",
+                    choices: roleList
                 },
                 {
                     message: "Which employee is the manager for this employee?",
@@ -380,6 +382,8 @@ function updateEmployeeManager() {
     .catch((err) => { throw(err);}); // catch error from getEmployees() call
 }
 
+// delete department
+// expect that roles and employees associated with that department will delete
 function deleteDepartment(){
     db.getDepartments()
     .then(( departments ) => {
@@ -410,19 +414,42 @@ function deleteDepartment(){
     .catch((err) => { throw(err);}); // catch error from getDepartments() call 
 }
 
-// delete department
-// expect that roles and employees associated with that department will delete
-
 // delete role
 // expect the employees will get deleted
+function deleteRole() {
+    db.getRoles()
+    .then(( roles ) => {
+        const roleList = roles.map( (role) => ({
+            value: role.id,
+            name: role.title})
+        );
+
+        inquirer.prompt([
+            {
+                name: "roleID",
+                message: "What role do you want to delete?",
+                type: "list",
+                choices: roleList
+            }
+        ]).then( roleID => {
+            // console.log(res);
+            // db.insertRole(newRoleInfo)
+            db.deleteRole(roleID)
+            .then((results) => {
+                console.log("Role deleted");
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from insertRole() call
+        })
+
+    })
+    .catch((err) => { throw(err);}); // catch error from getDepartments() call 
+}
 
 // delete employee
 // if they are manager, reports should be set as null 
 
-//   * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-// show the user a list of departments so they can choose one
-// select 
-
+// viewBudget - View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 function viewBudget() {
     db.getDepartments()
     .then(( departments ) => {
