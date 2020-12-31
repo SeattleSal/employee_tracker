@@ -354,6 +354,8 @@ function updateEmployeeRole() {
     .catch((err) => { throw(err);}); // catch error from getEmployees() call
 }
 
+// udpateEmployeeManager - display list of employees to choose to change manager,
+// then show potential managers (list of employees) and change manager
 function updateEmployeeManager() {
     db.getEmployees()
     .then(( employees ) => {
@@ -451,10 +453,32 @@ function deleteRole() {
     .catch((err) => { throw(err);}); // catch error from getDepartments() call 
 }
 
-// TO DO - delete employee
-// if they are manager, reports should be set as null 
+// deleteEmployee - choose employee to delete, if employee is a manager their employees will show null as manager id
 function deleteEmployee() {
-    // delete Employee
+    db.getEmployees()
+    .then(( employees ) => {
+        const employeeList = employees.map((emp) => ({
+            value: emp.id,
+            name: `${emp.first_name} ${emp.last_name}`
+        }));
+
+        inquirer.prompt([
+            {
+                message: "What employee do you want delete?",
+                name: "employeeID",
+                type: "list",
+                choices: employeeList
+            }
+        ]).then( newManagerInfo => {
+            db.deleteEmployee(newManagerInfo)
+            .then((results) => {
+                console.log("Employee deleted");
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch error from deleteEmployee
+        })
+    })
+    .catch((err) => { throw(err);}); // catch error from getEmployees() call
 }
 
 // viewEmployeesByManager - show all managers for user to choose from, then employees for that chosen manager

@@ -38,6 +38,16 @@ module.exports = {
             on emp1.manager_id = emp2.id
             where emp1.manager_id = ${managerInfo.managerID}`);
     },
+    getDepartmentBudget(departmentInfo){
+        return connection.query(`SELECT department.id, department.name, SUM(role.salary) AS 'budget' 
+                                FROM employee 
+                                LEFT JOIN role
+                                    on employee.role_id = role.id
+                                LEFT JOIN department
+                                    on role.department_id = department.id
+                                WHERE department.id = ${departmentInfo.departmentID}`,
+                );
+    },
     // insert functions
     insertDepartment(deptData){
         return connection.query("INSERT INTO department SET ?",
@@ -62,6 +72,7 @@ module.exports = {
             manager_id: empData.managerID
         });
     },
+    // update functions
     updateEmployeeRole(empData){
         console.log("from inside db... " + empData)
         return connection.query("UPDATE employee SET ? WHERE ?",
@@ -85,6 +96,7 @@ module.exports = {
             }
         ]);
     },
+    // delete functions
     deleteDepartment(depInfo){
         return connection.query("DELETE FROM department WHERE ?",
         {
@@ -96,16 +108,14 @@ module.exports = {
         {
             id: roleInfo.roleID
         });
-    },    getDepartmentBudget(departmentInfo){
-        return connection.query(`SELECT department.id, department.name, SUM(role.salary) AS 'budget' 
-                                FROM employee 
-                                LEFT JOIN role
-                                    on employee.role_id = role.id
-                                LEFT JOIN department
-                                    on role.department_id = department.id
-                                WHERE department.id = ${departmentInfo.departmentID}`,
-                );
+    },
+    deleteEmployee(employeeInfo) {
+        return connection.query("DELETE FROM employee WHERE ?",
+        {
+            id: employeeInfo.employeeID
+        });
     }
+
 }
 
 
