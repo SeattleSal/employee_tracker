@@ -95,7 +95,6 @@ function init() {
                     name: "Exit",
                     value: "EXIT"
                 }    
-                // TO DO : delete roles and delete employees            
             ]
         }
     ])
@@ -159,6 +158,7 @@ function init() {
     });
 }
 
+// viewDepartments - shows list of all departments
 function viewDepartments() {
     db.getDepartments()
     .then((res) => { 
@@ -169,6 +169,7 @@ function viewDepartments() {
     .catch((err) => { throw(err); });
 }
 
+// viewRoles - shows list of all roles
 function viewRoles() {
     db.getRoles()
     .then((res) => { 
@@ -180,6 +181,7 @@ function viewRoles() {
     .catch((err) => { throw(err); });
 }
 
+// viewEmployees - displays employee data with role title, department and salary
 function viewEmployees() {
     db.getEmployees()
     .then((res) => { 
@@ -191,6 +193,7 @@ function viewEmployees() {
     .catch((err) => { throw(err); });
 }
 
+// createDepartment
 function createDepartment() {
     // console.log("create department!");
     inquirer.prompt([
@@ -210,9 +213,8 @@ function createDepartment() {
     })
 }
 
+// createRole - display departments, then add role to department with title and salary
 function createRole() {
-    // console.log("create role");
-    // read departments to display as list
     db.getDepartments()
     .then(( departments ) => {
         const departmentList = departments.map( (department) => ({
@@ -250,9 +252,8 @@ function createRole() {
     .catch((err) => { throw(err);}); // catch error from getDepartments() call
 }
 
+// createEmployee - displays roles, then user inputs info for new employee
 function createEmployee() {
-    // get roles to choose from
-    // get existing employees to choose manager or none
     db.getRoles()
     .then(( roles ) => {
         const roleList = roles.map( (role) => ({
@@ -260,7 +261,6 @@ function createEmployee() {
             name: role.title})
         );
 
-        // put get employees here to put in list for manager display?
         db.getEmployees()
         .then(( employees ) => {
             const employeeList = employees.map((emp) => ({
@@ -310,6 +310,7 @@ function createEmployee() {
     .catch((err) => { throw(err);}); // catch error from getRoles() call
 }
 
+// updateEmployeeRole - user chooses an employee then chooses a new role for that employee
 function updateEmployeeRole() {
     db.getEmployees()
     .then(( employees ) => {
@@ -318,7 +319,6 @@ function updateEmployeeRole() {
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        // put get employees here to put in list for manager display?
         db.getRoles()
         .then(( roles ) => {
             const roleList = roles.map( (role) => ({
@@ -362,7 +362,7 @@ function updateEmployeeManager() {
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        // create manager list with all but current employee?
+        // TO DO - create manager list with all but current employee?
         inquirer.prompt([
             {
                 message: "What employee do you want to change the manager?",
@@ -391,8 +391,7 @@ function updateEmployeeManager() {
     .catch((err) => { throw(err);}); // catch error from getEmployees() call
 }
 
-// delete department
-// expect that roles and employees associated with that department will delete
+// delete department - delete department and any roles and employees associated with that department
 function deleteDepartment(){
     db.getDepartments()
     .then(( departments ) => {
@@ -423,8 +422,7 @@ function deleteDepartment(){
     .catch((err) => { throw(err);}); // catch error from getDepartments() call 
 }
 
-// delete role
-// expect the employees will get deleted
+// delete role - delete roll and any employees with that role
 function deleteRole() {
     db.getRoles()
     .then(( roles ) => {
@@ -453,16 +451,14 @@ function deleteRole() {
     .catch((err) => { throw(err);}); // catch error from getDepartments() call 
 }
 
-// delete employee
+// TO DO - delete employee
 // if they are manager, reports should be set as null 
 function deleteEmployee() {
     // delete Employee
 }
 
+// viewEmployeesByManager - show all managers for user to choose from, then employees for that chosen manager
 function viewEmployeesByManager() {
-    // display managers OR employees with employees
-    // choose
-    // display
     db.getManagers()
     .then(( managers ) => {
         const managerList = managers.map (( manager ) => ({
@@ -509,8 +505,6 @@ function viewBudget() {
                 choices: departmentList
             }
         ]).then( departmentInfo => {
-            // console.log(res);
-            // db.insertRole(newRoleInfo)
             db.getDepartmentBudget(departmentInfo)
             .then((results) => {
                 let budgetTable = cTable.getTable(results);

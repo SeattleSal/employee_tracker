@@ -8,7 +8,10 @@ module.exports = {
         return connection.query("SELECT * FROM department")
     },
     getRoles() {
-        return connection.query("SELECT * FROM role")
+        return connection.query(`select role.id, role.title, role.salary, department.name
+            from role
+            left join department
+            on role.department_id = department.id`)
     },
     getEmployees() {
         // get role and department info from role and department tables
