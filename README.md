@@ -1,4 +1,4 @@
-# Note Taker
+# Employee Tracker
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ## Table of Contents
@@ -9,7 +9,7 @@
 * [License](#license)
 
 ## Description
-Note Taker is an application that can be used to write, save and delete notes. The application uses an Express backend to save and retrieve note data from a JSON file.
+Employee Tracker is a **C**ontent **M**anagement **S**ystems for managing a company's employees, roles and departments. It utilizes node, inquirer and MySQL and is a command line application.
 
 ## Dependencies
 * [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
@@ -22,23 +22,32 @@ There is a `package.json` included, the following commands should be run to inst
 ```bash
 npm i
 ```
-Note the frontend files were provided. 
+
+## Database
+The application uses a MySQL database. A schema.sql and seeds.sql file are provided. 
+![Database Schema](assets/schema.png)
 
 ## Usage
-Use the links below to use the application live. If you prefer to run the application from your computer, you can use the following command after installing the dependencies:
+Run the application from your computer using the following command after installing the dependencies:
 ```bash
-node server.js
+node index.js
 ```
 
-The application displays a home page, the user can click Get Started button to get to the Notes page. On the Notes page, the user can enter in text for a new note, view a previously saved note or delete a previously saved note. 
+The application displays a logo, then options for the user to choose including:
+  * Add departments, roles, employees
+  * View departments, roles, employees
+  * Update employee roles
+  * Update employee managers
+  * View employees by manager
+  * Delete departments, roles, and employees
+  * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 
-See Screenshots:
+See Screenshots and click for video:
 ![Home Page](./assets/img/homepage.JPG)
 ![Notes Page](./assets/img/notes.JPG)
 
 ## Links
-* Github Link: https://github.com/SeattleSal/note_taker
-* Heroku: https://seattlesal-notes-taker.herokuapp.com/
+* Github Link: https://github.com/SeattleSal/employee_tracker
 
 ## License
 

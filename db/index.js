@@ -21,6 +21,20 @@ module.exports = {
             LEFT JOIN employee as emp2
                 ON emp.manager_id = emp2.id`)
     },
+    getManagers() {
+        // get role and department info from role and department tables
+        return connection.query(`select distinct emp1.id, emp1.first_name, emp1.last_name 
+            from employee as emp1
+            inner join employee as emp2
+                on emp1.id = emp2.manager_id`)
+    },
+    getEmployeesByManager(managerInfo) {
+        return connection.query(`select emp1.first_name, emp1.last_name 
+            from employee as emp1
+            left join employee as emp2
+            on emp1.manager_id = emp2.id
+            where emp1.manager_id = ${managerInfo.managerID}`);
+    },
     // insert functions
     insertDepartment(deptData){
         return connection.query("INSERT INTO department SET ?",

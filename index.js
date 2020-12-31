@@ -6,12 +6,10 @@ const cTable = require('console.table');
 // require db folder which includes index.js
 const db = require("./db");
 const connection = require("./db/connection");
-// const { createPromptModule } = require("inquirer");
-// const { insertRole } = require("./db");
 
 init();
 
-// display intro logo
+// init - display intro logo
 function init() {
     console.log(
         logo({
@@ -33,6 +31,7 @@ function init() {
     loadMainPrompts();
 };
 
+// loadMainPrompts - menu of options for user to choose
  function loadMainPrompts() {
      inquirer.prompt([
         {
@@ -81,6 +80,14 @@ function init() {
                     value: "DELETE_ROLE"
                 },
                 {
+                    name: "Delete employee",
+                    value: "DELETE_EMPLOYEE"
+                },
+                {
+                    name: "View all employees by manager",
+                    value: "VIEW_EMPLOYEES_BY_MANAGER"
+                },
+                {
                     name: "View budget of department",
                     value: "DEPARTMENT_BUDGET"
                 },
@@ -88,13 +95,7 @@ function init() {
                     name: "Exit",
                     value: "EXIT"
                 }    
-                // TO DO: view employee by manager
                 // TO DO : delete roles and delete employees            
-                // {
-                //     name: "View all employees by manager",
-                //     value: "VIEW_EMPLOYEES_BY_MANAGER"
-                // },
-
             ]
         }
     ])
@@ -138,6 +139,14 @@ function init() {
             
             case "DELETE_ROLE":
                 deleteRole();
+                break;
+
+            case "DELETE_EMPLOYEE":
+                deleteEmployee();
+                break;
+
+            case "VIEW_EMPLOYEES_BY_MANAGER":
+                viewEmployeesByManager();
                 break;
             
             case "DEPARTMENT_BUDGET":
@@ -432,8 +441,6 @@ function deleteRole() {
                 choices: roleList
             }
         ]).then( roleID => {
-            // console.log(res);
-            // db.insertRole(newRoleInfo)
             db.deleteRole(roleID)
             .then((results) => {
                 console.log("Role deleted");
@@ -448,6 +455,42 @@ function deleteRole() {
 
 // delete employee
 // if they are manager, reports should be set as null 
+function deleteEmployee() {
+    // delete Employee
+}
+
+function viewEmployeesByManager() {
+    // display managers OR employees with employees
+    // choose
+    // display
+    db.getManagers()
+    .then(( managers ) => {
+        const managerList = managers.map (( manager ) => ({
+            value: manager.id,
+            name: `${manager.first_name} ${manager.last_name}`
+        }));
+
+        inquirer.prompt([
+            {
+                message: "What manager's employees do you want to view?",
+                name: "managerID",
+                type: "list",
+                choices: managerList
+            }
+        ])
+        .then(managerInfo => {
+            // console.log(managerInfo);
+            db.getEmployeesByManager(managerInfo)
+            .then((results) => {
+                let empTable = cTable.getTable(results);
+                console.log(empTable);
+                loadMainPrompts();
+            })
+            .catch((err) => { throw (err); }); // catch from getEmployeesByManager 
+        })
+    })
+    .catch((err) => { throw (err); }); // catch from getManagers call
+}
 
 // viewBudget - View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 function viewBudget() {
@@ -480,3 +523,4 @@ function viewBudget() {
     })
     .catch((err) => { throw(err);}); // catch error from getDepartments() call
 }
+
