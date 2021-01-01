@@ -1,9 +1,8 @@
-// interactions with database
+// db/index.js - interactions with database, includes object methods returning promise
 const connection = require("./connection");
 
-// object methods return a promise
 module.exports = {
-    // get functions
+    // GET FUNCTIONS
     getDepartments() {
         return connection.query("SELECT * FROM department")
     },
@@ -29,26 +28,28 @@ module.exports = {
         return connection.query(`select distinct emp1.id, emp1.first_name, emp1.last_name 
             from employee as emp1
             inner join employee as emp2
-                on emp1.id = emp2.manager_id`)
+                on emp1.id = emp2.manager_id`
+        );
     },
     getEmployeesByManager(managerInfo) {
         return connection.query(`select emp1.first_name, emp1.last_name 
             from employee as emp1
             left join employee as emp2
             on emp1.manager_id = emp2.id
-            where emp1.manager_id = ${managerInfo.managerID}`);
+            where emp1.manager_id = ${managerInfo.managerID}`
+        );
     },
     getDepartmentBudget(departmentInfo){
         return connection.query(`SELECT department.id, department.name, SUM(role.salary) AS 'budget' 
-                                FROM employee 
-                                LEFT JOIN role
-                                    on employee.role_id = role.id
-                                LEFT JOIN department
-                                    on role.department_id = department.id
-                                WHERE department.id = ${departmentInfo.departmentID}`,
-                );
+                FROM employee 
+                LEFT JOIN role
+                    on employee.role_id = role.id
+                LEFT JOIN department
+                    on role.department_id = department.id
+                WHERE department.id = ${departmentInfo.departmentID}`,
+        );
     },
-    // insert functions
+    // INSERT FUNCTIONS
     insertDepartment(deptData){
         return connection.query("INSERT INTO department SET ?",
         {
@@ -72,7 +73,7 @@ module.exports = {
             manager_id: empData.managerID
         });
     },
-    // update functions
+    // UPDATE FUNCTIONS
     updateEmployeeRole(empData){
         console.log("from inside db... " + empData)
         return connection.query("UPDATE employee SET ? WHERE ?",
@@ -85,18 +86,19 @@ module.exports = {
             }
         ]);
     },
-    updateEmployeeManager(managerData){
+    updateEmployeeManager(newManagerInfo){
+        console.log(newManagerInfo[0].employeeID, newManagerInfo[1].managerID);
         return connection.query("UPDATE employee SET ? WHERE ?",
         [
             { 
-                manager_id: managerData.managerID
+                manager_id: newManagerInfo[1].managerID
             },
             {
-                id: managerData.employeeID
+                id: newManagerInfo[0].employeeID
             }
         ]);
     },
-    // delete functions
+    // DELETE FUNCTIONS
     deleteDepartment(depInfo){
         return connection.query("DELETE FROM department WHERE ?",
         {
@@ -115,13 +117,4 @@ module.exports = {
             id: employeeInfo.employeeID
         });
     }
-
 }
-
-
-// connection.query("")
-// .then((res) => {
-// })
-// .catch((err) => {
-//
-// });

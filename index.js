@@ -271,6 +271,7 @@ function createEmployee() {
                 value: null,
                 name: "No Manager"
             })
+            // let managerList = employeeList.filter(emp => emp.id != )
 
             inquirer.prompt([
                 {
@@ -357,6 +358,10 @@ function updateEmployeeRole() {
 // udpateEmployeeManager - display list of employees to choose to change manager,
 // then show potential managers (list of employees) and change manager
 function updateEmployeeManager() {
+    let selectedEmployee;
+    let selectedManager;
+    let newManagerInfo = [];
+
     db.getEmployees()
     .then(( employees ) => {
         const employeeList = employees.map((emp) => ({
@@ -364,33 +369,39 @@ function updateEmployeeManager() {
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        // TO DO - create manager list with all but current employee?
         inquirer.prompt([
             {
                 message: "What employee do you want to change the manager?",
                 name: "employeeID",
                 type: "list",
                 choices: employeeList
-            },
-            {
-                message: "What is the new manager for this employee?",
-                name: "managerID",
-                type: "list",
-                choices: employeeList,
-                // filter: function 
-                // employeeList.filter(emp => emp.id != employeeID)
             }
-        ]).then( newManagerInfo => {
-            // console.log(newRoleInfo);
-            db.updateEmployeeManager(newManagerInfo)
-            .then((results) => {
-                console.log("Employee manager updated");
-                loadMainPrompts();
-            })
-            .catch((err) => { throw (err); }); // catch error from insertEmployee() call
+        ]).then( employeeInfo => {
+            // remove current employee from potential manager list
+            selectedEmployee = employeeInfo;
+            const managerList = employeeList.filter(emp => emp.value != selectedEmployee.employeeID);
+            inquirer.prompt([
+                {
+                    message: "Who is the new manager for this employee?",
+                    name: "managerID",
+                    type: "list",
+                    choices: managerList,
+                }
+            ])
+            .then(newManagerInfo => {
+                selectedManager = newManagerInfo;
+                newManagerInfo = [selectedEmployee, selectedManager];
+                db.updateEmployeeManager(newManagerInfo)
+                .then((results) => {
+                    console.log("Employee manager updated");
+                    loadMainPrompts();
+                })
+                .catch((err) => { throw (err); }); // catch error from insertEmployee() call                
+
+            } )
         })
     })
-    .catch((err) => { throw(err);}); // catch error from getEmployees() call
+    .catch((err) => { throw(err);}); // catch error from getEmployees() call    // db.getEmployees()
 }
 
 // delete department - delete department and any roles and employees associated with that department
@@ -499,7 +510,6 @@ function viewEmployeesByManager() {
             }
         ])
         .then(managerInfo => {
-            // console.log(managerInfo);
             db.getEmployeesByManager(managerInfo)
             .then((results) => {
                 let empTable = cTable.getTable(results);

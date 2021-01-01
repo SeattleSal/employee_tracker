@@ -1,7 +1,7 @@
-// connection.js - handles all connection functionality
+// db/connection.js - handles all connection functionality
 const mysql = require("mysql");
 const util = require("util"); // used to promisify function
-require("dotenv").config();
+require("dotenv").config(); // used to hide password
 
 const connection = mysql.createConnection({
     host: "localhost",
