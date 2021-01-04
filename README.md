@@ -12,10 +12,10 @@
 Employee Tracker is a **C**ontent **M**anagement **S**ystems for managing a company's employees, roles and departments. It utilizes node, inquirer and MySQL and is a command line application.
 
 ## Dependencies
-* [MySQL](https://www.npmjs.com/package/mysql) NPM package to connect to your MySQL database and perform queries.
-* [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) NPM package to interact with the user via the command-line.
-* [console.table](https://www.npmjs.com/package/console.table) to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
-* [ASCII Art Logo](https://www.npmjs.com/package/asciiart-logo)
+* [MySQL](https://www.npmjs.com/package/mysql) - NPM package to connect to your MySQL database and perform queries.
+* [InquirerJs](https://www.npmjs.com/package/inquirer/v/0.2.3) - NPM package to interact with the user via the command-line.
+* [console.table](https://www.npmjs.com/package/console.table) - to print MySQL rows to the console. There is a built-in version of `console.table`, but the NPM package formats the data a little better for our purposes.
+* [ASCII Art Logo](https://www.npmjs.com/package/asciiart-logo) - to print intro logo art.
 
 There is a `package.json` included, the following commands should be run to install dependencies:
 
@@ -24,7 +24,7 @@ npm i
 ```
 
 ## Database
-The application uses a MySQL database. A schema.sql and seeds.sql file are provided. 
+The application uses a MySQL database. A schema.sql and seed.sql file are provided. 
 ![Database Schema](assets/schema.png)
 
 ## Usage
