@@ -75,7 +75,6 @@ module.exports = {
     },
     // UPDATE FUNCTIONS
     updateEmployeeRole(empData){
-        console.log("from inside db... " + empData)
         return connection.query("UPDATE employee SET ? WHERE ?",
         [
             { 
@@ -87,7 +86,6 @@ module.exports = {
         ]);
     },
     updateEmployeeManager(newManagerInfo){
-        console.log(newManagerInfo[0].employeeID, newManagerInfo[1].managerID);
         return connection.query("UPDATE employee SET ? WHERE ?",
         [
             { 

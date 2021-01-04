@@ -37,14 +37,16 @@ The application displays a logo, then options for the user to choose including:
   * Add departments, roles, employees
   * View departments, roles, employees
   * Update employee roles
-  * Update employee managers
+  * Update employee managers - any employee can be a manager but an employee cannot be their own manager
   * View employees by manager
-  * Delete departments, roles, and employees
+  * Delete departments - will delete all roles and employees associated with department
+  * Delete roles - will delete all employees associated with role
+  * Delete employees - if employee was manager, their employees will have null for manager id
   * View the total utilized budget of a department -- ie the combined salaries of all employees in that department
 
 See Screenshots and click for video:
-![Home Page](./assets/img/homepage.JPG)
-![Notes Page](./assets/img/notes.JPG)
+
+[![Employee Summary Walkthrough](./assets/video_gif.gif)](https://drive.google.com/file/d/1B3P_wJjEnPmHWFPjslLiUh6WFILuFzqU/view)
 
 ## Links
 * Github Link: https://github.com/SeattleSal/employee_tracker

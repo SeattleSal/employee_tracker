@@ -175,7 +175,6 @@ function viewRoles() {
     .then((res) => { 
         let roleTable = cTable.getTable(res);
         console.log(roleTable);
-        // console.table(res);
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
@@ -187,7 +186,6 @@ function viewEmployees() {
     .then((res) => { 
         let empTable = cTable.getTable(res);
         console.log(empTable);
-        // console.table(res);
         loadMainPrompts();
     })
     .catch((err) => { throw(err); });
@@ -195,7 +193,6 @@ function viewEmployees() {
 
 // createDepartment
 function createDepartment() {
-    // console.log("create department!");
     inquirer.prompt([
         {
             name: "name",
@@ -203,7 +200,6 @@ function createDepartment() {
             type: "input"
         }
     ]).then( newDepartmentInfo => {
-        // console.log(res);
         db.insertDepartment(newDepartmentInfo)
         .then((results) => {
             console.log("New department added");
@@ -297,7 +293,6 @@ function createEmployee() {
                     choices: employeeList
                 }
             ]).then( newEmployeeInfo => {
-                // console.log(res);
                 db.insertEmployee(newEmployeeInfo)
                 .then((results) => {
                     console.log("New Employee added");
@@ -341,7 +336,7 @@ function updateEmployeeRole() {
                     choices: roleList
                 }
             ]).then( newRoleInfo => {
-                console.log(newRoleInfo);
+                // console.log(newRoleInfo);
                 db.updateEmployeeRole (newRoleInfo)
                 .then((results) => {
                     console.log("Employee role updated");
@@ -385,7 +380,7 @@ function updateEmployeeManager() {
                     message: "Who is the new manager for this employee?",
                     name: "managerID",
                     type: "list",
-                    choices: managerList,
+                    choices: managerList
                 }
             ])
             .then(newManagerInfo => {
@@ -421,8 +416,6 @@ function deleteDepartment(){
                 choices: departmentList
             }
         ]).then( departmentID => {
-            // console.log(res);
-            // db.insertRole(newRoleInfo)
             db.deleteDepartment(departmentID)
             .then((results) => {
                 console.log("Department deleted");
