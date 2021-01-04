@@ -46,7 +46,7 @@ The application displays a logo, then options for the user to choose including:
 
 See Screenshots and click for video:
 
-[![Employee Summary Walkthrough](./assets/video_gif.gif)](https://drive.google.com/file/d/1B3P_wJjEnPmHWFPjslLiUh6WFILuFzqU/view)
+[![Employee Summary Walkthrough](./assets/video.gif)](https://drive.google.com/file/d/1BnT5a0FPNPfUBmMttgJmW8Blw-q7i_pk/view)
 
 ## Links
 * Github Link: https://github.com/SeattleSal/employee_tracker
