@@ -203,7 +203,7 @@ function createDepartment() {
         db.insertDepartment(newDepartmentInfo)
         .then((results) => {
             console.log("New department added");
-            loadMainPrompts();
+            viewDepartments();
         })
         .catch((err) => { throw (err); }); // catch error from insertDepartment() call
     })
@@ -239,7 +239,7 @@ function createRole() {
             db.insertRole(newRoleInfo)
             .then((results) => {
                 console.log("New role added");
-                loadMainPrompts();
+                viewRoles();
             })
             .catch((err) => { throw (err); }); // catch error from insertRole() call
         })
@@ -296,7 +296,7 @@ function createEmployee() {
                 db.insertEmployee(newEmployeeInfo)
                 .then((results) => {
                     console.log("New Employee added");
-                    loadMainPrompts();
+                    viewEmployees();
                 })
                 .catch((err) => { throw (err); }); // catch error from insertEmployee() call
             })
@@ -340,7 +340,8 @@ function updateEmployeeRole() {
                 db.updateEmployeeRole (newRoleInfo)
                 .then((results) => {
                     console.log("Employee role updated");
-                    loadMainPrompts();
+                    viewEmployees();
+                    
                 })
                 .catch((err) => { throw (err); }); // catch error from insertEmployee() call
             })
@@ -389,7 +390,7 @@ function updateEmployeeManager() {
                 db.updateEmployeeManager(newManagerInfo)
                 .then((results) => {
                     console.log("Employee manager updated");
-                    loadMainPrompts();
+                    viewEmployees();
                 })
                 .catch((err) => { throw (err); }); // catch error from insertEmployee() call                
 
@@ -419,7 +420,7 @@ function deleteDepartment(){
             db.deleteDepartment(departmentID)
             .then((results) => {
                 console.log("Department deleted");
-                loadMainPrompts();
+                viewDepartments();
             })
             .catch((err) => { throw (err); }); // catch error from insertRole() call
         })
@@ -448,7 +449,7 @@ function deleteRole() {
             db.deleteRole(roleID)
             .then((results) => {
                 console.log("Role deleted");
-                loadMainPrompts();
+                viewRoles();
             })
             .catch((err) => { throw (err); }); // catch error from insertRole() call
         })
@@ -477,7 +478,7 @@ function deleteEmployee() {
             db.deleteEmployee(newManagerInfo)
             .then((results) => {
                 console.log("Employee deleted");
-                loadMainPrompts();
+                viewEmployees();
             })
             .catch((err) => { throw (err); }); // catch error from deleteEmployee
         })
