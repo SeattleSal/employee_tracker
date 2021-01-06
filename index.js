@@ -335,8 +335,6 @@ async function updateEmployeeRole() {
 // then show potential managers (list of employees) and change manager
 async function updateEmployeeManager() {
     try {
-        let selectedEmployee;
-        let selectedManager;
         let newManagerInfo = [];
 
         const employees = await db.getEmployees();
@@ -345,7 +343,7 @@ async function updateEmployeeManager() {
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        selectedEmployee = await inquirer.prompt([
+        const selectedEmployee = await inquirer.prompt([
             {
                 message: "What employee do you want to change the manager?",
                 name: "employeeID",
@@ -355,7 +353,7 @@ async function updateEmployeeManager() {
         ])
         const managerList = employeeList.filter(emp => emp.value != selectedEmployee.employeeID);
 
-        selectedManager = await inquirer.prompt([
+        const selectedManager = await inquirer.prompt([
             {
                 message: "Who is the new manager for this employee?",
                 name: "managerID",
