@@ -159,66 +159,66 @@ function init() {
 }
 
 // viewDepartments - shows list of all departments
-function viewDepartments() {
-    db.getDepartments()
-    .then((res) => { 
-        let deptTable = cTable.getTable(res);
+async function viewDepartments() {
+    try {
+        const departments = await db.getDepartments();
+        let deptTable = cTable.getTable(departments);
         console.log(deptTable);
         loadMainPrompts();
-    })
-    .catch((err) => { throw(err); });
+    }
+    catch (err) { console.log(err); }
 }
 
 // viewRoles - shows list of all roles
-function viewRoles() {
-    db.getRoles()
-    .then((res) => { 
-        let roleTable = cTable.getTable(res);
+async function viewRoles() {
+    try {
+        const roles = await db.getRoles()
+        let roleTable = cTable.getTable(roles);
         console.log(roleTable);
         loadMainPrompts();
-    })
-    .catch((err) => { throw(err); });
+    }
+    catch (err) { console.log(err); }
 }
 
 // viewEmployees - displays employee data with role title, department and salary
-function viewEmployees() {
-    db.getEmployees()
-    .then((res) => { 
-        let empTable = cTable.getTable(res);
+async function viewEmployees() {
+    try {
+        const employees = await db.getEmployees();
+        let empTable = cTable.getTable(employees);
         console.log(empTable);
         loadMainPrompts();
-    })
-    .catch((err) => { throw(err); });
+    }
+    catch (err) { console.log(err); }
 }
 
 // createDepartment
-function createDepartment() {
-    inquirer.prompt([
-        {
-            name: "name",
-            message: "What name is the new department?",
-            type: "input"
-        }
-    ]).then( newDepartmentInfo => {
-        db.insertDepartment(newDepartmentInfo)
-        .then((results) => {
-            console.log("New department added");
-            viewDepartments();
-        })
-        .catch((err) => { throw (err); }); // catch error from insertDepartment() call
-    })
+async function createDepartment() {
+    try {
+        const newDepartmentInfo = await inquirer.prompt([
+            {
+                name: "name",
+                message: "What name is the new department?",
+                type: "input"
+            }   
+        ]);
+        const departments = await db.insertDepartment(newDepartmentInfo);
+        console.log("New department added");
+        viewDepartments();
+    }
+    catch (err) { console.log(err); }
 }
 
+
 // createRole - display departments, then add role to department with title and salary
-function createRole() {
-    db.getDepartments()
-    .then(( departments ) => {
+async function createRole() {
+    try {
+        const departments = await db.getDepartments();
         const departmentList = departments.map( (department) => ({
             value: department.id,
             name: department.name})
         );
 
-        inquirer.prompt([
+        const newRoleInfo = await inquirer.prompt([
             {
                 name: "departmentID",
                 message: "What department is this role for?",
@@ -235,314 +235,266 @@ function createRole() {
                 message: "What is the salary for this role?",
                 type: "input"
             }
-        ]).then( newRoleInfo => {
-            db.insertRole(newRoleInfo)
-            .then((results) => {
-                console.log("New role added");
-                viewRoles();
-            })
-            .catch((err) => { throw (err); }); // catch error from insertRole() call
-        })
+        ])
 
-    })
-    .catch((err) => { throw(err);}); // catch error from getDepartments() call
+        const results = await db.insertRole(newRoleInfo);
+        console.log("New role added");
+        viewRoles();
+    }
+    catch (err) { console.log(err); }
 }
 
 // createEmployee - displays roles, then user inputs info for new employee
-function createEmployee() {
-    db.getRoles()
-    .then(( roles ) => {
+async function createEmployee() {
+    try {
+        const roles = await db.getRoles();
         const roleList = roles.map( (role) => ({
             value: role.id,
             name: role.title})
         );
 
-        db.getEmployees()
-        .then(( employees ) => {
-            const employeeList = employees.map((emp) => ({
-                value: emp.id,
-                name: `${emp.first_name} ${emp.last_name}`
-            }));
-            employeeList.unshift({
-                value: null,
-                name: "No Manager"
-            })
-            // let managerList = employeeList.filter(emp => emp.id != )
-
-            inquirer.prompt([
-                {
-                    message: "What is the first name of the employee?",
-                    name: "fName",
-                    type: "input"
-                },
-                {
-                    message: "What is the last name of the employee?",
-                    name: "lName",
-                    type: "input"
-                },
-                {
-                    message: "What role is this employee for?",
-                    name: "roleID",
-                    type: "list",
-                    choices: roleList
-                },
-                {
-                    message: "Which employee is the manager for this employee?",
-                    name: "managerID",
-                    type: "list",
-                    choices: employeeList
-                }
-            ]).then( newEmployeeInfo => {
-                db.insertEmployee(newEmployeeInfo)
-                .then((results) => {
-                    console.log("New Employee added");
-                    viewEmployees();
-                })
-                .catch((err) => { throw (err); }); // catch error from insertEmployee() call
-            })
+        const employees = await db.getEmployees();
+        const employeeList = employees.map((emp) => ({
+            value: emp.id,
+            name: `${emp.first_name} ${emp.last_name}`
+        }));
+        employeeList.unshift({
+            value: null,
+            name: "No Manager"
         })
-        .catch((err) => { throw(err);}); // catch error from getEmployees() call
-    })
-    .catch((err) => { throw(err);}); // catch error from getRoles() call
+
+        const newEmployeeInfo = await inquirer.prompt([
+            {
+                message: "What is the first name of the employee?",
+                name: "fName",
+                type: "input"
+            },
+            {
+                message: "What is the last name of the employee?",
+                name: "lName",
+                type: "input"
+            },
+            {
+                message: "What role is this employee for?",
+                name: "roleID",
+                type: "list",
+                choices: roleList
+            },
+            {
+                message: "Which employee is the manager for this employee?",
+                name: "managerID",
+                type: "list",
+                choices: employeeList
+            }
+        ]);
+        const results = await db.insertEmployee(newEmployeeInfo);
+            console.log("New Employee added");
+            viewEmployees();
+    }
+    catch (err) { console.log(err); }
 }
 
 // updateEmployeeRole - user chooses an employee then chooses a new role for that employee
-function updateEmployeeRole() {
-    db.getEmployees()
-    .then(( employees ) => {
+async function updateEmployeeRole() {
+    try {
+        const employees = await db.getEmployees();
         const employeeList = employees.map((emp) => ({
             value: emp.id,
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        db.getRoles()
-        .then(( roles ) => {
-            const roleList = roles.map( (role) => ({
-                value: role.id,
-                name: role.title})
-            );
+        const roles = await db.getRoles();
+        const roleList = roles.map( (role) => ({
+            value: role.id,
+            name: role.title})
+        );
 
-            inquirer.prompt([
-                {
-                    message: "What employee role do you want to change?",
-                    name: "employeeID",
-                    type: "list",
-                    choices: employeeList
-                },
-                {
-                    message: "What is the employee's new role?",
-                    name: "roleID",
-                    type: "list",
-                    choices: roleList
-                }
-            ]).then( newRoleInfo => {
-                // console.log(newRoleInfo);
-                db.updateEmployeeRole (newRoleInfo)
-                .then((results) => {
-                    console.log("Employee role updated");
-                    viewEmployees();
-                    
-                })
-                .catch((err) => { throw (err); }); // catch error from insertEmployee() call
-            })
-        })
-        .catch((err) => { throw(err);}); // catch error from getRoles() call
-    })
-    .catch((err) => { throw(err);}); // catch error from getEmployees() call
+        const newRoleInfo = await inquirer.prompt([
+            {
+                message: "What employee role do you want to change?",
+                name: "employeeID",
+                type: "list",
+                choices: employeeList
+            },
+            {
+                message: "What is the employee's new role?",
+                name: "roleID",
+                type: "list",
+                choices: roleList
+            } 
+        ])
+        const results = await db.updateEmployeeRole(newRoleInfo);
+        console.log("Employee role updated");
+        viewEmployees();
+    }
+    catch (err) { console.log(err); }
 }
+
 
 // udpateEmployeeManager - display list of employees to choose to change manager,
 // then show potential managers (list of employees) and change manager
-function updateEmployeeManager() {
-    let selectedEmployee;
-    let selectedManager;
-    let newManagerInfo = [];
+async function updateEmployeeManager() {
+    try {
+        let selectedEmployee;
+        let selectedManager;
+        let newManagerInfo = [];
 
-    db.getEmployees()
-    .then(( employees ) => {
+        const employees = await db.getEmployees();
         const employeeList = employees.map((emp) => ({
             value: emp.id,
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        inquirer.prompt([
+        selectedEmployee = await inquirer.prompt([
             {
                 message: "What employee do you want to change the manager?",
                 name: "employeeID",
                 type: "list",
                 choices: employeeList
-            }
-        ]).then( employeeInfo => {
-            // remove current employee from potential manager list
-            selectedEmployee = employeeInfo;
-            const managerList = employeeList.filter(emp => emp.value != selectedEmployee.employeeID);
-            inquirer.prompt([
-                {
-                    message: "Who is the new manager for this employee?",
-                    name: "managerID",
-                    type: "list",
-                    choices: managerList
-                }
-            ])
-            .then(newManagerInfo => {
-                selectedManager = newManagerInfo;
-                newManagerInfo = [selectedEmployee, selectedManager];
-                db.updateEmployeeManager(newManagerInfo)
-                .then((results) => {
-                    console.log("Employee manager updated");
-                    viewEmployees();
-                })
-                .catch((err) => { throw (err); }); // catch error from insertEmployee() call                
+            } 
+        ])
+        const managerList = employeeList.filter(emp => emp.value != selectedEmployee.employeeID);
 
-            } )
-        })
-    })
-    .catch((err) => { throw(err);}); // catch error from getEmployees() call    // db.getEmployees()
+        selectedManager = await inquirer.prompt([
+            {
+                message: "Who is the new manager for this employee?",
+                name: "managerID",
+                type: "list",
+                choices: managerList
+            }
+        ])
+        newManagerInfo = [selectedEmployee, selectedManager];
+
+        const results = await db.updateEmployeeManager(newManagerInfo);
+        console.log("Employee manager updated");
+        viewEmployees();
+    }
+    catch (err) { console.log(err); }
 }
 
 // delete department - delete department and any roles and employees associated with that department
-function deleteDepartment(){
-    db.getDepartments()
-    .then(( departments ) => {
-        const departmentList = departments.map( (department) => ({
-            value: department.id,
-            name: department.name})
-        );
+async function deleteDepartment() {
+    try {
+    const departments = await db.getDepartments();
+    const departmentList = departments.map( (department) => ({
+        value: department.id,
+        name: department.name})
+    );
 
-        inquirer.prompt([
-            {
-                name: "departmentID",
-                message: "What department do you want to delete?",
-                type: "list",
-                choices: departmentList
-            }
-        ]).then( departmentID => {
-            db.deleteDepartment(departmentID)
-            .then((results) => {
-                console.log("Department deleted");
-                viewDepartments();
-            })
-            .catch((err) => { throw (err); }); // catch error from insertRole() call
-        })
-
-    })
-    .catch((err) => { throw(err);}); // catch error from getDepartments() call 
+    const departmentID = await inquirer.prompt([
+        {
+            name: "departmentID",
+            message: "What department do you want to delete?",
+            type: "list",
+            choices: departmentList
+        }
+    ]);
+    
+    const results = await db.deleteDepartment(departmentID);
+    console.log("Department deleted");
+    viewDepartments();
+    } catch (err) {console.log(err)}
 }
 
+
 // delete role - delete roll and any employees with that role
-function deleteRole() {
-    db.getRoles()
-    .then(( roles ) => {
+async function deleteRole() {
+    try {
+        const roles = await db.getRoles();
         const roleList = roles.map( (role) => ({
             value: role.id,
             name: role.title})
         );
 
-        inquirer.prompt([
+        const roleID = await inquirer.prompt([
             {
                 name: "roleID",
                 message: "What role do you want to delete?",
                 type: "list",
                 choices: roleList
             }
-        ]).then( roleID => {
-            db.deleteRole(roleID)
-            .then((results) => {
-                console.log("Role deleted");
-                viewRoles();
-            })
-            .catch((err) => { throw (err); }); // catch error from insertRole() call
-        })
-
-    })
-    .catch((err) => { throw(err);}); // catch error from getDepartments() call 
+        ])
+        const results = await db.deleteRole(roleID);
+        console.log("Role deleted");
+        viewRoles();
+    }
+    catch (err) { console.log(err); }
 }
 
 // deleteEmployee - choose employee to delete, if employee is a manager their employees will show null as manager id
-function deleteEmployee() {
-    db.getEmployees()
-    .then(( employees ) => {
+async function deleteEmployee() {
+    try {
+        const employees = await db.getEmployees();
         const employeeList = employees.map((emp) => ({
             value: emp.id,
             name: `${emp.first_name} ${emp.last_name}`
         }));
 
-        inquirer.prompt([
+        const employeeInfo = await inquirer.prompt([
             {
                 message: "What employee do you want delete?",
                 name: "employeeID",
                 type: "list",
                 choices: employeeList
             }
-        ]).then( newManagerInfo => {
-            db.deleteEmployee(newManagerInfo)
-            .then((results) => {
-                console.log("Employee deleted");
-                viewEmployees();
-            })
-            .catch((err) => { throw (err); }); // catch error from deleteEmployee
-        })
-    })
-    .catch((err) => { throw(err);}); // catch error from getEmployees() call
+        ]);
+
+        const results = await db.deleteEmployee(employeeInfo);
+        console.log("Employee deleted");
+        viewEmployees();
+    }
+    catch (err) { console.log(err); }
 }
 
 // viewEmployeesByManager - show all managers for user to choose from, then employees for that chosen manager
-function viewEmployeesByManager() {
-    db.getManagers()
-    .then(( managers ) => {
+async function viewEmployeesByManager() {
+    try {
+        const managers = await db.getManagers();
         const managerList = managers.map (( manager ) => ({
             value: manager.id,
             name: `${manager.first_name} ${manager.last_name}`
         }));
 
-        inquirer.prompt([
+        const managerInfo = await inquirer.prompt([
             {
                 message: "What manager's employees do you want to view?",
                 name: "managerID",
                 type: "list",
                 choices: managerList
             }
-        ])
-        .then(managerInfo => {
-            db.getEmployeesByManager(managerInfo)
-            .then((results) => {
-                let empTable = cTable.getTable(results);
-                console.log(empTable);
-                loadMainPrompts();
-            })
-            .catch((err) => { throw (err); }); // catch from getEmployeesByManager 
-        })
-    })
-    .catch((err) => { throw (err); }); // catch from getManagers call
+        ]);
+
+        const results = await db.getEmployeesByManager(managerInfo);
+        let empTable = cTable.getTable(results);
+        console.log(empTable);
+        loadMainPrompts();
+    }
+    catch (err) { console.log(err); }
 }
 
 // viewBudget - View the total utilized budget of a department -- ie the combined salaries of all employees in that department
-function viewBudget() {
-    db.getDepartments()
-    .then(( departments ) => {
+async function viewBudget() {
+    try {
+        const departments = await db.getDepartments();
         const departmentList = departments.map( (department) => ({
             value: department.id,
             name: department.name})
         );
 
-        inquirer.prompt([
+        const departmentInfo = await inquirer.prompt([
             {
                 name: "departmentID",
                 message: "What department do you want to see the budget for?",
                 type: "list",
                 choices: departmentList
             }
-        ]).then( departmentInfo => {
-            db.getDepartmentBudget(departmentInfo)
-            .then((results) => {
-                let budgetTable = cTable.getTable(results);
-                console.log(budgetTable);
-                loadMainPrompts();
-            })
-            .catch((err) => { throw (err); }); // catch error from insertRole() call
-        })
+        ]);
 
-    })
-    .catch((err) => { throw(err);}); // catch error from getDepartments() call
+        const results = await db.getDepartmentBudget(departmentInfo);
+        let budgetTable = cTable.getTable(results);
+        console.log(budgetTable);
+        loadMainPrompts();
+    }
+    catch (err) { console.log(err); }
 }
 
