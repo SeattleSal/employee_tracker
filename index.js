@@ -32,8 +32,9 @@ function init() {
 };
 
 // loadMainPrompts - menu of options for user to choose
- function loadMainPrompts() {
-     inquirer.prompt([
+async function loadMainPrompts() {
+    try {
+        const answer = await inquirer.prompt([
         {
             type: "list",
             name: "choice",
@@ -96,9 +97,8 @@ function init() {
                     value: "EXIT"
                 }    
             ]
-        }
-    ])
-    .then(function(answer) {
+        }]);
+
         switch(answer.choice) {
             case "VIEW_DEPARTMENTS":
                 viewDepartments()
@@ -155,7 +155,8 @@ function init() {
             default:
                 connection.end();
         }
-    });
+    }
+    catch (err) { console.log(err); }
 }
 
 // viewDepartments - shows list of all departments
@@ -373,24 +374,24 @@ async function updateEmployeeManager() {
 // delete department - delete department and any roles and employees associated with that department
 async function deleteDepartment() {
     try {
-    const departments = await db.getDepartments();
-    const departmentList = departments.map( (department) => ({
-        value: department.id,
-        name: department.name})
-    );
+        const departments = await db.getDepartments();
+        const departmentList = departments.map( (department) => ({
+            value: department.id,
+            name: department.name})
+        );
 
-    const departmentID = await inquirer.prompt([
-        {
-            name: "departmentID",
-            message: "What department do you want to delete?",
-            type: "list",
-            choices: departmentList
-        }
-    ]);
-    
-    const results = await db.deleteDepartment(departmentID);
-    console.log("Department deleted");
-    viewDepartments();
+        const departmentID = await inquirer.prompt([
+            {
+                name: "departmentID",
+                message: "What department do you want to delete?",
+                type: "list",
+                choices: departmentList
+            }
+        ]);
+        
+        const results = await db.deleteDepartment(departmentID);
+        console.log("Department deleted");
+        viewDepartments();
     } catch (err) {console.log(err)}
 }
 
